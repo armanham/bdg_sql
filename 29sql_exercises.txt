@@ -1,0 +1,362 @@
+exercise 1.
+
+SELECT salesman.name, customer.name, customer.city
+from customer, salesman
+where customer.city = salesman.city;
+
+SELECT salesman.name, customer.name, customer.city
+from customer
+    inner join salesman on salesman.city = customer.city;
+
+----------------------------------------------------------------------
+
+exercise 2.
+
+select ord_no, purch_amt, name as cust_name, city
+from orders
+         inner join customer c on c.id = orders.customer_id
+where purch_amt::numeric::integer between 500 and 2000
+  and c.id = orders.customer_id;
+
+SELECT ord_no,
+       purch_amt,
+       name as cust_name,
+       city
+FROM orders,
+     customer c
+WHERE orders.customer_id = c.id
+  AND purch_amt::numeric::integer BETWEEN 500 AND 2000;
+
+----------------------------------------------------------------------
+
+exercise 3.
+
+select customer.name as cust_name,
+       customer.city,
+       s.name        as salesman_name,
+       commission
+from customer
+         inner join salesman s on s.id = customer.salesman_id;
+
+----------------------------------------------------------------------
+
+exercise 4.
+
+--where-ում mathematical condition-ը %-ի հետ կապված այլ կերպ ա արված, քանի որ սկզբից իմ մոտ մի քիչ 
+--այլ կերպ եմ լցրել էդ արժեքները
+
+select customer.name as cust_name,
+       customer.city as city,
+       salesman.name as salesman_name,
+       commission
+from customer inner join salesman on salesman.id = customer.salesman_id
+where commission * 10 > 12;
+
+----------------------------------------------------------------------
+
+exercise 5.
+
+select customer.name as cust_name,
+       customer.city as cust_city,
+       salesman.city as salesman_city,
+       salesman.name as salesman_name,
+       commission
+from customer inner join salesman on salesman.id = customer.salesman_id
+where commission * 10 > 12
+and customer.city<>salesman.city;
+
+----------------------------------------------------------------------
+
+exercise 6.
+
+select ord_no,
+       ord_date,
+       purch_amt,
+       c.name as cust_name,
+       grade,
+       s.name as s_name,
+       commission
+from orders
+         inner join customer c on c.id = orders.customer_id
+         inner join salesman s on s.id = orders.salesman_id;
+
+----------------------------------------------------------------------
+
+exercise 7.
+
+?????
+
+----------------------------------------------------------------------
+
+exercise 8.
+
+select c.name as c_name,
+       c.city as c_city,
+       grade,
+       s.name as s_name,
+       s.city as s_city
+from customer c inner join salesman s on s.id = c.salesman_id
+order by c.id;
+
+--վերևում գրված query-ն ցույց կտա միայն այն customer-ներին, որոնք ունեն salesman
+--եթե պետք ա ցուցադրել բոլոր customer-ներին անկախ salesman-ի առկայությունից` left join.
+--տվյալ աղյուսակների համար տարբերություն չի զգացվի, քանի որ բոլոր customer-ները ունեն salesman
+
+select c.name as c_name,
+       c.city as c_city,
+       grade,
+       s.name as s_name,
+       s.city as s_city
+from customer c left join salesman s on s.id = c.salesman_id
+order by c.id;
+
+----------------------------------------------------------------------
+
+exercise 9.
+
+select c.name as c_name,
+       c.city as c_city,
+       grade,
+       s.name as s_name,
+       s.city as s_city
+from customer c left join salesman s on s.id = c.salesman_id
+where grade < 300
+order by c.id;
+
+----------------------------------------------------------------------
+
+exercise 10.
+
+select c.name as cust_name,
+       city,
+       ord_no,
+       ord_date,
+       purch_amt
+from customer c left outer join orders o on c.id = o.customer_id
+order by ord_date;
+
+----------------------------------------------------------------------
+
+exercise 11.
+
+--left join ենք անում սկսզբից customers on orders, քանի որ պետք ա բոլոր order ունեցող ու չունեցող
+--customer-ների ցանկը, հետո ստացված աղյուսակը left join on orders ըստ salesman_id, քանի որ պետք ա տեսնել customer-ը
+--order ա արել salesman-ով, թե ոչ:
+
+--?????????? իսկ ինչ եթե սկզբից customer left join on salesman, հետո ստացված table-ը left join on orders ????????
+
+select c.name as cust_name,
+       c.city,
+       ord_no,
+       ord_date,
+       purch_amt,
+       s.name as s_name,
+       commission
+from customer c
+         left join orders o on c.id = o.customer_id
+         left join salesman s on s.id = o.salesman_id;
+
+----------------------------------------------------------------------
+
+exercise 12.
+
+select s.name      as s_name,
+       count(c.id) as cust_count
+from salesman s
+         left join customer c on s.id = c.salesman_id
+group by s.name
+order by count(c.id);
+
+12. Write a SQL statement to generate a list in ascending order of salespersons 
+who work either for one or more customers or have not yet joined any of the customers.
+
+12-ի լուծումը կայքում, որի հետ համաձայն չեմ,,, քանի որ ասում ա ցույց տուր բոլոր salesman-ներին ըստ customer-ների,
+բայց ինքը իրականում հակառակն ա անում:
+Չգիտեմ, կարող ա ես եմ սխալ ընկալում::::
+
+SELECT a.cust_name,a.city,a.grade, 
+b.name AS "Salesman", b.city 
+FROM customer a 
+RIGHT OUTER JOIN salesman b 
+ON b.salesman_id=a.salesman_id 
+ORDER BY b.salesman_id;
+
+----------------------------------------------------------------------
+
+exercise 13.
+
+select s.name      as s_name,
+       c.name      as cust_name,
+       s.city      as s_city,
+       grade,
+       o.ord_no    as ord_no,
+       o.ord_date  as ord_date,
+       o.purch_amt as purch_amt
+from customer c
+         right join salesman s on s.id = c.salesman_id
+         right join orders o on c.id = o.customer_id
+order by s.id;
+
+----------------------------------------------------------------------
+
+exercise 14.
+
+select s.name as s_name,
+       c.name as cust_name,
+       c.city,
+       grade,
+       ord_no,
+       ord_date,
+       purch_amt
+from customer c
+         right join salesman s on s.id = c.salesman_id
+         left join orders o on o.customer_id = c.id
+where o.purch_amt::numeric::integer >= 2000
+  and c.grade is not null;
+
+----------------------------------------------------------------------
+
+exercise 15.
+
+պահանջ ????
+
+----------------------------------------------------------------------
+
+exercise 16.
+
+պահանջ ????
+
+----------------------------------------------------------------------
+
+exercise 17.
+
+select *
+from salesman
+         cross join customer;
+
+----------------------------------------------------------------------
+
+exercise 18.
+
+?????????
+
+----------------------------------------------------------------------
+
+exercise 19.
+
+??????????
+
+----------------------------------------------------------------------
+
+exercise 20.
+
+????????
+
+----------------------------------------------------------------------
+
+exercise 21.
+
+select *
+from item_mast
+         inner join company_mast cm on cm.id = item_mast.
+
+----------------------------------------------------------------------
+
+exercise 22.
+
+select im.name as item_name,
+       price,
+       cm.name as comp_name
+from item_mast im inner join company_mast cm on cm.id = im.company_id;
+
+----------------------------------------------------------------------
+
+exercise 23.
+
+select cm.name                      as comp_name,
+       avg(price::numeric::integer) as avg_price
+from item_mast im
+         inner join company_mast cm on cm.id = im.company_id
+group by cm.name;
+
+----------------------------------------------------------------------
+
+exercise 24.
+
+select cm.name                      as comp_name,
+       avg(price::numeric::integer) as avg_price
+from item_mast im
+         inner join company_mast cm on cm.id = im.company_id
+group by cm.name
+having avg(price::numeric::integer) >= 350;
+
+----------------------------------------------------------------------
+
+exercise 25.
+
+select item_mast.name    as item_name,
+       item_mast.price   as max_item_price,
+       company_mast.name as comp_name
+from item_mast,
+     company_mast
+where item_mast.company_id = company_mast.id
+  and item_mast.price::numeric::integer =
+      (select max(item_mast.price::numeric::integer)
+       from item_mast
+       where item_mast.company_id = company_mast.id);
+
+
+select item_mast.name    as item_name,
+       item_mast.price   as max_item_price,
+       cm.name as comp_name
+from item_mast
+         inner join company_mast cm on cm.id = item_mast.company_id
+    and item_mast.price::numeric::integer =
+        (select max(item_mast.price::numeric::integer)
+         from item_mast
+         where item_mast.company_id = cm.id);
+
+----------------------------------------------------------------------
+
+exercise 26.
+
+select *
+from emp_details
+         inner join emp_department ed on ed.dpt_code = emp_details.emp_dpt;
+
+----------------------------------------------------------------------
+
+exercise 27.
+
+select emp_fname,
+       emp_lname,
+       dpt_name,
+       dpt_allotment
+from emp_details
+         inner join emp_department ed on ed.dpt_code = emp_details.emp_dpt;
+
+----------------------------------------------------------------------
+
+exercise 28.
+
+--կարելի ա նաև and-ի փոխարեն where օգտագործել,,, նախընտրելի ա and-ը, քանի որ
+--այդ դեպքում join-ից առաջացած աղյուսակը միանգամից ֆիլտրված կլինի:
+
+select emp_fname,
+       emp_lname,
+       dpt_name,
+       dpt_allotment
+from emp_details
+         inner join emp_department ed on ed.dpt_code = emp_details.emp_dpt
+    and dpt_allotment::numeric::integer >= 50000;
+
+----------------------------------------------------------------------
+
+exercise 29.
+
+select dpt_name,
+       count(emp_indo) as emp_count
+from emp_details
+         inner join emp_department ed on ed.dpt_code = emp_details.emp_dpt
+group by dpt_name
+having count(*) > 2;
