@@ -90,6 +90,13 @@ group by destination
 order by count(passenger_id) desc
 limit 10;
 
---10. ???Retrieve the origin and destination airports that have the highest average cost per
+--10. Retrieve the origin and destination airports that have the highest average cost per
 --passenger, but only for flights that depart from an airport with more than 5
 --departures.
+
+SELECT COUNT(origin), origin, AVG(cost::numeric::integer) AS AVERAGE_COST
+FROM Bookings
+         INNER JOIN Flights F ON Bookings.flight_number = F.flight_number
+GROUP BY origin
+HAVING COUNT(origin) > 2
+ORDER BY AVERAGE_COST DESC;
