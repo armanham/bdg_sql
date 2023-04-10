@@ -221,7 +221,13 @@ where o.purch_amt::numeric::integer >= 2000
 
 exercise 15.
 
-պահանջ ????
+select c.name      as cust_name,
+       c.city      as cust_city,
+       o.ord_no    as ord_no,
+       o.ord_date  as ord_date,
+       o.purch_amt as purch_amt
+from customer c
+         left join orders o on c.id = o.customer_id;
 
 ----------------------------------------------------------------------
 
